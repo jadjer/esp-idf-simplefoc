@@ -1,2 +1,3 @@
-# esp32-simplefoc
-SimpleFOC implementation for esp32
+# esp-idf-simplefoc
+SimpleFOC implementation for ESP32
+Based on Arduino SimpleFOC, MIT License.
