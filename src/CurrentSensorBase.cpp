@@ -19,7 +19,7 @@ namespace foc {
 // get current magnitude
 //   - absolute  - if no electrical_angle provided
 //   - signed    - if angle provided
-float CurrentSensorBase::getDCCurrent(float motor_electrical_angle) {
+float CurrentSensorBase::getDCCurrent(CurrentSensorBase::ElectricalAngle electricalAngle) {
   // read current phase currents
   PhaseCurrent current = getPhaseCurrents();
 
@@ -32,10 +32,10 @@ float CurrentSensorBase::getDCCurrent(float motor_electrical_angle) {
   // if motor angle provided function returns signed value of the current
   // determine the sign of the current
   // sign(atan2(current.q, current.d)) is the same as c.q > 0 ? 1 : -1
-  if (motor_electrical_angle) {
+  if (electricalAngle) {
     float ct;
     float st;
-    _sincos(motor_electrical_angle, &st, &ct);
+    _sincos(electricalAngle, &st, &ct);
     sign = (ABcurrent.beta * ct - ABcurrent.alpha * st) > 0 ? 1 : -1;
   }
   // return current magnitude
@@ -46,7 +46,7 @@ float CurrentSensorBase::getDCCurrent(float motor_electrical_angle) {
 //   calculating DQ currents from phase currents
 //   - function calculating park and clarke transform of the phase currents
 //   - using getPhaseCurrents and getABCurrents internally
-DQCurrent CurrentSensorBase::getFOCCurrents(float angle_el) {
+DQCurrent CurrentSensorBase::getFOCCurrents(CurrentSensorBase::ElectricalAngle electricalAngle) {
   // read current phase currents
   PhaseCurrent current = getPhaseCurrents();
 
@@ -54,7 +54,7 @@ DQCurrent CurrentSensorBase::getFOCCurrents(float angle_el) {
   ABCurrent ABcurrent = getABCurrents(current);
 
   // calculate park transform
-  DQCurrent return_current = getDQCurrents(ABcurrent, angle_el);
+  DQCurrent return_current = getDQCurrents(ABcurrent, electricalAngle);
 
   return return_current;
 }
@@ -91,7 +91,8 @@ ABCurrent CurrentSensorBase::getABCurrents(PhaseCurrent current) {
     i_alpha = current.a;
     i_beta = _1_SQRT3 * current.a + _2_SQRT3 * b;
   } else {
-    // signal filtering using identity a + b + c = 0. Assumes measurement error is normally distributed.
+    // signal filtering using identity a + b + c = 0. Assumes measurement error
+    // is normally distributed.
     float mid = (1.f / 3) * (current.a + current.b + current.c);
     float a = current.a - mid;
     float b = current.b - mid;
@@ -108,11 +109,11 @@ ABCurrent CurrentSensorBase::getABCurrents(PhaseCurrent current) {
 // function used with the foc algorithm
 //   calculating D and Q currents from Alpha Beta currents and electrical angle
 //   - function calculating Clarke transform of the phase currents
-DQCurrent CurrentSensorBase::getDQCurrents(ABCurrent current, float angle_el) {
+DQCurrent CurrentSensorBase::getDQCurrents(ABCurrent current, CurrentSensorBase::ElectricalAngle electricalAngle) {
   // calculate park transform
   float ct;
   float st;
-  _sincos(angle_el, &st, &ct);
+  _sincos(electricalAngle, &st, &ct);
   DQCurrent return_current;
   return_current.d = current.alpha * ct + current.beta * st;
   return_current.q = current.beta * ct - current.alpha * st;
@@ -140,4 +141,4 @@ PhaseCurrent CurrentSensorBase::readAverageCurrents(int N) {
   return c;
 };
 
-}// namespace foc
+} // namespace foc

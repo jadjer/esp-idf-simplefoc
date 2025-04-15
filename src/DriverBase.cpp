@@ -16,34 +16,6 @@
 
 namespace foc {
 
-DriverBase::DriverBase(
-    DriverBase::Pin phA_h,
-    DriverBase::Pin phA_l,
-    DriverBase::Pin phB_h,
-    DriverBase::Pin phB_l,
-    DriverBase::Pin phC_h,
-    DriverBase::Pin phC_l,
-    DriverBase::OptionalPin en) {
-      // Pin initialization
-  pwmA_h = phA_h;
-  pwmB_h = phB_h;
-  pwmC_h = phC_h;
-  pwmA_l = phA_l;
-  pwmB_l = phB_l;
-  pwmC_l = phC_l;
-
-  // enable_pin pin
-  enable_pin = en;
-
-  // default power-supply value
-  voltage_power_supply = DEF_POWER_SUPPLY;
-  voltage_limit = NOT_SET;
-  pwm_frequency = NOT_SET;
-
-  // dead zone initial - 2%
-  dead_zone = 0.02f;
-}
-
 // enable motor driver
 void DriverBase::enable() {
   // enable_pin the driver - if enable_pin pin available
@@ -115,12 +87,12 @@ void DriverBase::setPwm(float Ua, float Ub, float Uc) {
 }
 
 // Set the phase state
-// actually changing the state is only done on the next call to setPwm, and depends
-// on the hardware capabilities of the driver and MCU.
+// actually changing the state is only done on the next call to setPwm, and
+// depends on the hardware capabilities of the driver and MCU.
 void DriverBase::setPhaseState(PhaseState sa, PhaseState sb, PhaseState sc) {
   phase_state[0] = sa;
   phase_state[1] = sb;
   phase_state[2] = sc;
 }
 
-}
+} // namespace foc

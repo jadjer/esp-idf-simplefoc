@@ -15,36 +15,35 @@
 #pragma once
 
 #include <cstdint>
-#include <esp_err.h>
 
 namespace foc {
 
-    enum PhaseState : std::uint8_t {
-        PHASE_OFF [[maybe_unused]] = 0,// both sides of the phase are off
-        PHASE_ON [[maybe_unused]] = 1, // both sides of the phase are driven with PWM, dead time is applied in 6-PWM mode
-        PHASE_HI [[maybe_unused]] = 2, // only the high side of the phase is driven with PWM (6-PWM mode only)
-        PHASE_LO [[maybe_unused]] = 3, // only the low side of the phase is driven with PWM (6-PWM mode only)
-    };
+enum PhaseState : std::uint8_t {
+  PHASE_OFF [[maybe_unused]] = 0,
+  PHASE_ON [[maybe_unused]] = 1,
+  PHASE_HI [[maybe_unused]] = 2,
+  PHASE_LO [[maybe_unused]] = 3,
+};
 
-    namespace interface {
+namespace interface {
 
-        class Driver {
-        public:
-            virtual ~Driver() = default;
+class Driver {
+public:
+  virtual ~Driver() = default;
 
-        public:
-            virtual void init() = 0;
+public:
+  virtual void init() = 0;
 
-        public:
-            virtual void enable() = 0;
+public:
+  virtual void enable() = 0;
 
-            virtual void disable() = 0;
+  virtual void disable() = 0;
 
-        public:
-            virtual void setPwm(float Ua, float Ub, float Uc) = 0;
+public:
+  virtual void setPwm(float Ua, float Ub, float Uc) = 0;
 
-            virtual void setPhaseState(PhaseState sa, PhaseState sb, PhaseState sc) = 0;
-        };
+  virtual void setPhaseState(PhaseState sa, PhaseState sb, PhaseState sc) = 0;
+};
 
-    }// namespace interface
-}// namespace foc
+} // namespace interface
+} // namespace foc

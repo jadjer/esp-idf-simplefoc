@@ -17,30 +17,27 @@
 #include <cstdint>
 
 /**
- * @namespace foc
+ * @namespace foc::interface
  */
-
-
 namespace foc::interface {
 
-    class Encoder {
-    public:
-        using Angle = float;
-        using Velocity = float;
-        using Rotations = std::int64_t;
+class Encoder {
+public:
+  using Angle = float;
+  using Velocity = float;
+  using Rotations = std::int64_t;
 
-    public:
-        virtual ~Encoder() = default;
+public:
+  virtual ~Encoder() = default;
 
-    public:
-        virtual Angle getSensorAngle() = 0;
+public:
+  virtual Angle getSensorAngle() = 0;
 
-        virtual Angle getAngle() = 0;
+  virtual Angle getAngle() = 0;
 
-        virtual Velocity getVelocity() = 0;
+  virtual Velocity getVelocity() = 0;
 
-        virtual Rotations getRotations() = 0;
-    };
+  virtual Rotations getRotations() = 0;
+};
 
-}
-
+} // namespace foc::interface

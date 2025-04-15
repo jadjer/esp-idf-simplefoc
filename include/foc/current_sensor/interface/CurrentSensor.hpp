@@ -16,50 +16,51 @@
 
 namespace foc {
 
-    struct DQCurrent {
-        float d;
-        float q;
-    };
+struct DQCurrent {
+  float d;
+  float q;
+};
 
-    struct PhaseCurrent {
-        float a;
-        float b;
-        float c;
-    };
+struct PhaseCurrent {
+  float a;
+  float b;
+  float c;
+};
 
-    struct ABCurrent {
-        float alpha;
-        float beta;
-    };
+struct ABCurrent {
+  float alpha;
+  float beta;
+};
 
-    namespace interface {
+namespace interface {
 
-        class CurrentSensor {
-        public:
-            using Current = float;
+class CurrentSensor {
+public:
+  using Current = float;
+  using ElectricalAngle = float;
 
-        public:
-            virtual ~CurrentSensor() = default;
+public:
+  virtual ~CurrentSensor() = default;
 
-        public:
-            virtual int init() = 0;
+public:
+  virtual int init() = 0;
 
-        public:
-            virtual void enable() = 0;
+public:
+  virtual void enable() = 0;
 
-            virtual void disable() = 0;
+  virtual void disable() = 0;
 
-        public:
-            virtual PhaseCurrent getPhaseCurrents() = 0;
+public:
+  virtual PhaseCurrent getPhaseCurrents() = 0;
 
-            virtual Current getDCCurrent(float angle_el) = 0;
+  virtual Current getDCCurrent(ElectricalAngle electricalAngle) = 0;
 
-            virtual DQCurrent getFOCCurrents(float angle_el) = 0;
+  virtual DQCurrent getFOCCurrents(ElectricalAngle electricalAngle) = 0;
 
-            virtual ABCurrent getABCurrents(PhaseCurrent current) = 0;
+  virtual ABCurrent getABCurrents(PhaseCurrent current) = 0;
 
-            virtual DQCurrent getDQCurrents(ABCurrent current, float angle_el) = 0;
-        };
+  virtual DQCurrent getDQCurrents(ABCurrent current, ElectricalAngle electricalAngle) = 0;
+};
 
-    }
-}// namespace foc
+} // namespace interface
+} // namespace foc

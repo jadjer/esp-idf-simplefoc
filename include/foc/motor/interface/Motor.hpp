@@ -17,30 +17,29 @@
 #include <cstdint>
 #include <esp_err.h>
 
-
 namespace foc::interface {
 
-    class Motor {
-    public:
-        using Error = esp_err_t;
-        using Target = float;
+class Motor {
+public:
+  using Error = esp_err_t;
+  using Target = float;
 
-    public:
-        virtual ~Motor() = default;
+public:
+  virtual ~Motor() = default;
 
-    public:
-        virtual Error initFOC() = 0;
+public:
+  virtual Error initFOC() = 0;
 
-    public:
-        virtual void disable() = 0;
+public:
+  virtual void disable() = 0;
 
-        virtual void enable() = 0;
+  virtual void enable() = 0;
 
-    public:
-        virtual void loopFOC() = 0;
+public:
+  virtual void loopFOC() = 0;
 
-    public:
-        virtual void move(Target target) = 0;
-    };
+public:
+  virtual void move(Target target) = 0;
+};
 
-}// namespace foc
+} // namespace foc::interface

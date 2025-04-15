@@ -22,83 +22,82 @@ namespace foc {
  *  Current sensing abstract class defintion
  * Each current sensing implementation needs to extend this interface
  */
-    class CurrentSensorBase : public interface::CurrentSensor {
-    public:
-
-        /**
+class CurrentSensorBase : public interface::CurrentSensor {
+public:
+  /**
    * enable the current sense. default implementation does nothing, but you can
    * override it to do something useful.
    */
-        void enable() override;
+  void enable() override;
 
-        /**
-           * disable the current sense. default implementation does nothing, but you can
-           * override it to do something useful.
-           */
-        void disable() override;
+  /**
+   * disable the current sense. default implementation does nothing, but you can
+   * override it to do something useful.
+   */
+  void disable() override;
 
-    public:
+public:
+  // variables
+  bool skip_align = false;  //!< variable signaling that the phase current
+                            //!< direction should be verified during initFOC()
+  bool initialized = false; // true if current sense was successfully initialized
 
-        // variables
-        bool skip_align = false;//!< variable signaling that the phase current direction should be verified during initFOC()
-        bool initialized = false;                    // true if current sense was successfully initialized
+  // ADC measurement gain for each phase
+  // support for different gains for different phases of more commonly -
+  // inverted phase currents this should be automated later
+  float gain_a; //!< phase A gain
+  float gain_b; //!< phase B gain
+  float gain_c; //!< phase C gain
 
-        // ADC measurement gain for each phase
-        // support for different gains for different phases of more commonly - inverted phase currents
-        // this should be automated later
-        float gain_a;//!< phase A gain
-        float gain_b;//!< phase B gain
-        float gain_c;//!< phase C gain
+  float offset_ia; //!< zero current A voltage value (center of the adc reading)
+  float offset_ib; //!< zero current B voltage value (center of the adc reading)
+  float offset_ic; //!< zero current C voltage value (center of the adc reading)
 
-        float offset_ia;//!< zero current A voltage value (center of the adc reading)
-        float offset_ib;//!< zero current B voltage value (center of the adc reading)
-        float offset_ic;//!< zero current C voltage value (center of the adc reading)
+  // hardware variables
+  int pinA; //!< pin A analog pin for current measurement
+  int pinB; //!< pin B analog pin for current measurement
+  int pinC; //!< pin C analog pin for current measurement
 
-        // hardware variables
-        int pinA;//!< pin A analog pin for current measurement
-        int pinB;//!< pin B analog pin for current measurement
-        int pinC;//!< pin C analog pin for current measurement
+  /**
+   * Function reading the magnitude of the current set to the motor
+   *  It returns the absolute or signed magnitude if possible
+   *  It can receive the motor electrical angle to help with calculation
+   *  This function is used with the current control  (not foc)
+   *
+   * @param angle_el - electrical angle of the motor (optional)
+   */
+  virtual float getDCCurrent(ElectricalAngle electricalAngle);
 
-        /**
-           * Function reading the magnitude of the current set to the motor
-           *  It returns the absolute or signed magnitude if possible
-           *  It can receive the motor electrical angle to help with calculation
-           *  This function is used with the current control  (not foc)
-           *
-           * @param angle_el - electrical angle of the motor (optional)
-           */
-        virtual float getDCCurrent(float angle_el);
+  /**
+   * Function used for FOC control, it reads the DQ currents of the motor
+   *   It uses the function getPhaseCurrents internally
+   *
+   * @param angle_el - motor electrical angle
+   */
+  DQCurrent getFOCCurrents(ElectricalAngle electricalAngle);
 
-        /**
-           * Function used for FOC control, it reads the DQ currents of the motor
-           *   It uses the function getPhaseCurrents internally
-           *
-           * @param angle_el - motor electrical angle
-           */
-        DQCurrent getFOCCurrents(float angle_el);
+  /**
+   * Function used for Clarke transform in FOC control
+   *   It reads the phase currents of the motor
+   *   It returns the alpha and beta currents
+   *
+   * @param current - phase current
+   */
+  ABCurrent getABCurrents(PhaseCurrent current);
 
-        /**
-           * Function used for Clarke transform in FOC control
-           *   It reads the phase currents of the motor
-           *   It returns the alpha and beta currents
-           *
-           * @param current - phase current
-           */
-        ABCurrent getABCurrents(PhaseCurrent current);
+  /**
+   * Function used for Park transform in FOC control
+   *   It reads the Alpha Beta currents and electrical angle of the motor
+   *   It returns the D and Q currents
+   *
+   * @param current - phase current
+   */
+  DQCurrent getDQCurrents(ABCurrent current, ElectricalAngle electricalAngle);
 
-        /**
-           * Function used for Park transform in FOC control
-           *   It reads the Alpha Beta currents and electrical angle of the motor
-           *   It returns the D and Q currents
-           *
-           * @param current - phase current
-           */
-        DQCurrent getDQCurrents(ABCurrent current, float angle_el);
+  /**
+   * Function used to read the average current values over N samples
+   */
+  PhaseCurrent readAverageCurrents(int N = 100);
+};
 
-        /**
-           * Function used to read the average current values over N samples
-          */
-        PhaseCurrent readAverageCurrents(int N = 100);
-    };
-
-}// namespace foc
+} // namespace foc
