@@ -12,12 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "foc/driver/BLDCDriver6PWM.hpp"
+#include "foc/driver/DriverBase.hpp"
 
 namespace foc {
 
-BLDCDriver6PWM::BLDCDriver6PWM(int phA_h, int phA_l, int phB_h, int phB_l, int phC_h, int phC_l, int en) {
-  // Pin initialization
+DriverBase::DriverBase(
+    DriverBase::Pin phA_h,
+    DriverBase::Pin phA_l,
+    DriverBase::Pin phB_h,
+    DriverBase::Pin phB_l,
+    DriverBase::Pin phC_h,
+    DriverBase::Pin phC_l,
+    DriverBase::OptionalPin en) {
+      // Pin initialization
   pwmA_h = phA_h;
   pwmB_h = phB_h;
   pwmC_h = phC_h;
@@ -38,7 +45,7 @@ BLDCDriver6PWM::BLDCDriver6PWM(int phA_h, int phA_l, int phB_h, int phB_l, int p
 }
 
 // enable motor driver
-void BLDCDriver6PWM::enable() {
+void DriverBase::enable() {
   // enable_pin the driver - if enable_pin pin available
   if (_isset(enable_pin))
     digitalWrite(enable_pin, enable_active_high);
@@ -49,7 +56,7 @@ void BLDCDriver6PWM::enable() {
 }
 
 // disable motor driver
-void BLDCDriver6PWM::disable() {
+void DriverBase::disable() {
   // set phase state to disabled
   setPhaseState(PhaseState::PHASE_OFF, PhaseState::PHASE_OFF, PhaseState::PHASE_OFF);
   // set zero to PWM
@@ -60,7 +67,7 @@ void BLDCDriver6PWM::disable() {
 }
 
 // init hardware pins
-int BLDCDriver6PWM::init() {
+int DriverBase::init() {
 
   // PWM pins
   pinMode(pwmA_h, OUTPUT);
@@ -92,7 +99,7 @@ int BLDCDriver6PWM::init() {
 }
 
 // Set voltage to the pwm pin
-void BLDCDriver6PWM::setPwm(float Ua, float Ub, float Uc) {
+void DriverBase::setPwm(float Ua, float Ub, float Uc) {
   // limit the voltage in driver
   Ua = _constrain(Ua, 0, voltage_limit);
   Ub = _constrain(Ub, 0, voltage_limit);
@@ -110,7 +117,7 @@ void BLDCDriver6PWM::setPwm(float Ua, float Ub, float Uc) {
 // Set the phase state
 // actually changing the state is only done on the next call to setPwm, and depends
 // on the hardware capabilities of the driver and MCU.
-void BLDCDriver6PWM::setPhaseState(PhaseState sa, PhaseState sb, PhaseState sc) {
+void DriverBase::setPhaseState(PhaseState sa, PhaseState sb, PhaseState sc) {
   phase_state[0] = sa;
   phase_state[1] = sb;
   phase_state[2] = sc;
