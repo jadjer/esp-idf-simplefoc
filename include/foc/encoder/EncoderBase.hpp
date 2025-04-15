@@ -65,10 +65,7 @@ namespace foc {
     class EncoderBase : public interface::Encoder{
     public:
         using Time = std::int64_t;
-        using Angle = float;
         using PreciseAngle = double;
-        using Velocity = float;
-        using Rotations = std::int32_t;
 
     public:
         ~EncoderBase() override = default;
@@ -89,7 +86,7 @@ namespace foc {
                * because the limited precision of float can't capture the large angle of the full
                * rotations and the small angle of the shaft angle at the same time.
                */
-        virtual Angle getAngle();
+        Angle getAngle() override;
 
         /**
                * On architectures supporting it, this will return a double precision position value,
@@ -105,7 +102,7 @@ namespace foc {
                * returned by update() so that it only makes sense to call this if update()
                * has been called in the meantime.
                */
-        virtual Velocity getVelocity();
+        Velocity getVelocity() override;
 
         /**
                * Get the number of full rotations
@@ -144,7 +141,7 @@ namespace foc {
                * Calling this method directly does not update the base-class internal fields.
                * Use update() when calling from outside code.
                */
-        virtual float getSensorAngle() = 0;
+//        virtual float getSensorAngle() = 0;
 
         /**
                * Call Sensor::init() from your sensor subclass's init method if you want smoother startup
