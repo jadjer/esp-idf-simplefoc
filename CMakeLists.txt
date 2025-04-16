@@ -4,6 +4,7 @@ set(SOURCES
         src/CurrentSensorBase.cpp
         src/DriverBase.cpp
         src/EncoderBase.cpp
+        src/LowPassFilter.cpp
         src/MotorBase.cpp
 )
 

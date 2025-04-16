@@ -14,7 +14,14 @@
 
 #include "foc/motor/MotorBase.hpp"
 
+#include <utility>
+
 namespace foc {
+
+auto const DEF_POWER_SUPPLY = 12;
+auto const DEF_CURRENT_LIM = 2;
+auto const DEF_INDEX_SEARCH_TARGET_VELOCITY = 2;
+auto const DEF_VOLTAGE_SENSOR_ALIGN = 1;
 
 MotorBase::MotorBase(MotorBase::PolePairs pp, MotorBase::OptionalResistance R, MotorBase::OptionalKVRating KV, MotorBase::OptionalInductance L)
     : m_polePairs(pp), m_phaseResistance(R), m_KVRating(KV), m_phaseInductance(L) {
@@ -24,7 +31,7 @@ MotorBase::MotorBase(MotorBase::PolePairs pp, MotorBase::OptionalResistance R, M
   m_velocityIndexSearch = DEF_INDEX_SEARCH_TARGET_VELOCITY;
   m_voltageSensorAlign = DEF_VOLTAGE_SENSOR_ALIGN;
 
-  m_focModulation = FOCModulationType::SinePWM;
+  m_focModulation = FOCModulationType::SINE_PWM;
 
   m_target = 0;
   m_voltage.d = 0;
@@ -48,28 +55,32 @@ void MotorBase::linkEncoder(Encoder encoder) { m_encoder = std::move(encoder); }
 
 void MotorBase::linkCurrentSense(CurrentSensor currentSensor) { m_currentSensor = std::move(currentSensor); }
 
-float MotorBase::shaftAngle() {
+auto MotorBase::shaftAngle() -> float {
   if (not m_encoder) {
     return m_shaftAngle;
   }
 
   return m_encoderDirection * m_LPFAngle(m_encoder->getAngle()) - m_encoderOffset;
+  return 0;
 }
 
-float MotorBase::shaftVelocity() {
+auto MotorBase::shaftVelocity() -> float {
   if (not m_encoder) {
     return m_shaftVelocity;
   }
 
   return m_encoderDirection * m_LPFVelocity(m_encoder->getVelocity());
+  return 0;
 }
 
-float MotorBase::electricalAngle() {
+auto MotorBase::electricalAngle() -> float {
   if (not m_encoder) {
     return m_electricalAngle;
   }
 
-  return _normalizeAngle((float)(m_encoderDirection * m_polePairs) * m_encoder->getMechanicalAngle() - m_zeroElectricAngle);
+//  return _normalizeAngle((float)(m_encoderDirection * m_polePairs) * m_encoder->getMechanicalAngle() - m_zeroElectricAngle);
+//  return _normalizeAngle((float)(m_encoderDirection * m_polePairs) * m_encoder->getAngle() - m_zeroElectricAngle);
+  return 0;
 }
 
 } // namespace foc

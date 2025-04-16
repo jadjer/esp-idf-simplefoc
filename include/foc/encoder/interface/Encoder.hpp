@@ -19,7 +19,26 @@
 /**
  * @namespace foc::interface
  */
-namespace foc::interface {
+namespace foc {
+
+/**
+ *  Direction structure
+ */
+enum Direction : std::int8_t {
+  CW [[maybe_unused]] = 1,     // clockwise
+  CCW [[maybe_unused]] = -1,   // counter clockwise
+  UNKNOWN [[maybe_unused]] = 0 // not yet known or invalid state
+};
+
+/**
+ *  Pullup configuration structure
+ */
+enum Pullup : std::uint8_t {
+  USE_INTERN [[maybe_unused]] = 0x00, //!< Use internal pullups
+  USE_EXTERN [[maybe_unused]] = 0x01  //!< Use external pullups
+};
+
+namespace interface {
 
 class Encoder {
 public:
@@ -31,13 +50,11 @@ public:
   virtual ~Encoder() = default;
 
 public:
-  virtual Angle getSensorAngle() = 0;
-
-  virtual Angle getAngle() = 0;
-
-  virtual Velocity getVelocity() = 0;
-
-  virtual Rotations getRotations() = 0;
+  virtual auto getSensorAngle() -> Angle = 0;
+  virtual auto getAngle() -> Angle = 0;
+  virtual auto getVelocity() -> Velocity = 0;
+  virtual auto getRotations() -> Rotations = 0;
 };
 
-} // namespace foc::interface
+} // namespace interface
+} // namespace foc

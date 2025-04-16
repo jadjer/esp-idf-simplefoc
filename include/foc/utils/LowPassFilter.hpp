@@ -14,31 +14,22 @@
 
 #pragma once
 
-#include <esp_err.h>
+namespace foc {
 
-namespace foc::interface {
-
-class Motor {
+class LowPassFilter {
 public:
-  using Error = esp_err_t;
-  using Target = float;
+  /**
+   * @param Tf - Low pass filter time constant
+   */
+  LowPassFilter(float Tf);
+  ~LowPassFilter() = default;
 
-public:
-  virtual ~Motor() = default;
+  float operator()(float x);
+  float Tf; //!< Low pass filter time constant
 
-public:
-  virtual auto initFOC() -> Error = 0;
-
-public:
-  virtual void disable() = 0;
-
-  virtual void enable() = 0;
-
-public:
-  virtual void loopFOC() = 0;
-
-public:
-  virtual void move(Target target) = 0;
+protected:
+  unsigned long timestamp_prev; //!< Last execution timestamp
+  float y_prev;                 //!< filtered value in previous execution step
 };
 
-} // namespace foc::interface
+} // namespace foc

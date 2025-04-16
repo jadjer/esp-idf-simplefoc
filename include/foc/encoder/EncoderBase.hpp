@@ -24,23 +24,6 @@
 namespace foc {
 
 /**
- *  Direction structure
- */
-enum Direction : std::int8_t {
-  CW [[maybe_unused]] = 1,     // clockwise
-  CCW [[maybe_unused]] = -1,   // counter clockwise
-  UNKNOWN [[maybe_unused]] = 0 // not yet known or invalid state
-};
-
-/**
- *  Pullup configuration structure
- */
-enum Pullup : std::uint8_t {
-  USE_INTERN [[maybe_unused]] = 0x00, //!< Use internal pullups
-  USE_EXTERN [[maybe_unused]] = 0x01  //!< Use external pullups
-};
-
-/**
  * @class BaseEncoder
  *
  * Sensor abstract class defintion
@@ -81,7 +64,7 @@ public:
    * returned by update() so that the same values are returned until update() is
    * called again.
    */
-  virtual Angle getMechanicalAngle();
+  virtual auto getMechanicalAngle() -> Angle;
 
   /**
    * Get current position (in rad) including full rotations and shaft angle.
@@ -92,7 +75,7 @@ public:
    * angle of the full rotations and the small angle of the shaft angle at the
    * same time.
    */
-  Angle getAngle() override;
+  auto getAngle() -> Angle override;
 
   /**
    * On architectures supporting it, this will return a double precision
@@ -100,7 +83,7 @@ public:
    * values. Base implementation uses the values returned by update() so that
    * the same values are returned until update() is called again.
    */
-  virtual PreciseAngle getPreciseAngle();
+  virtual auto getPreciseAngle() -> PreciseAngle;
 
   /**
    * Get current angular velocity (rad/s)
@@ -108,14 +91,14 @@ public:
    * returned by update() so that it only makes sense to call this if update()
    * has been called in the meantime.
    */
-  Velocity getVelocity() override;
+  auto getVelocity() -> Velocity override;
 
   /**
    * Get the number of full rotations
    * Base implementation uses the values returned by update() so that the same
    * values are returned until update() is called again.
    */
-  virtual Rotations getFullRotations();
+  virtual auto getFullRotations() -> Rotations;
 
 public:
   /**
@@ -136,7 +119,7 @@ public:
    * 0 - magnetic sensor (& encoder with index which is found)
    * 1 - ecoder with index (with index not found yet)
    */
-  virtual int needsSearch();
+  virtual auto needsSearch() -> int;
 
 protected:
   /**
@@ -159,7 +142,7 @@ protected:
   virtual void init();
 
 protected:
-  float m_minElapsedTime = 0.000100; // default is 100 microseconds, or 10kHz
+  float const m_minElapsedTime = 0.000100; // default is 100 microseconds, or 10kHz
 
 protected:
   Velocity m_velocity = 0.0f;
