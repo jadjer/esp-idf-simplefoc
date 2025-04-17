@@ -28,15 +28,57 @@ public:
    * enable the current sense. default implementation does nothing, but you can
    * override it to do something useful.
    */
-  void enable() override;
+  auto enable() -> void override;
 
   /**
    * disable the current sense. default implementation does nothing, but you can
    * override it to do something useful.
    */
-  void disable() override;
+  auto disable() -> void override;
 
 public:
+  /**
+   * Function reading the magnitude of the current set to the motor
+   *  It returns the absolute or signed magnitude if possible
+   *  It can receive the motor electrical angle to help with calculation
+   *  This function is used with the current control  (not foc)
+   *
+   * @param angle_el - electrical angle of the motor (optional)
+   */
+  auto getDCCurrent(ElectricalAngle electricalAngle) -> Current override;
+
+  /**
+   * Function used for FOC control, it reads the DQ currents of the motor
+   *   It uses the function getPhaseCurrents internally
+   *
+   * @param angle_el - motor electrical angle
+   */
+  auto getFOCCurrents(ElectricalAngle electricalAngle) -> DQCurrent override;
+
+  /**
+   * Function used for Clarke transform in FOC control
+   *   It reads the phase currents of the motor
+   *   It returns the alpha and beta currents
+   *
+   * @param current - phase current
+   */
+  auto getABCurrents(PhaseCurrent current) -> ABCurrent override;
+
+  /**
+   * Function used for Park transform in FOC control
+   *   It reads the Alpha Beta currents and electrical angle of the motor
+   *   It returns the D and Q currents
+   *
+   * @param current - phase current
+   */
+  auto getDQCurrents(ABCurrent current, ElectricalAngle electricalAngle) -> DQCurrent override;
+
+  /**
+   * Function used to read the average current values over N samples
+   */
+  auto readAverageCurrents(int N = 100) -> PhaseCurrent;
+
+private:
   // variables
   bool skip_align = false;  //!< variable signaling that the phase current
                             //!< direction should be verified during initFOC()
@@ -57,47 +99,6 @@ public:
   int pinA; //!< pin A analog pin for current measurement
   int pinB; //!< pin B analog pin for current measurement
   int pinC; //!< pin C analog pin for current measurement
-
-  /**
-   * Function reading the magnitude of the current set to the motor
-   *  It returns the absolute or signed magnitude if possible
-   *  It can receive the motor electrical angle to help with calculation
-   *  This function is used with the current control  (not foc)
-   *
-   * @param angle_el - electrical angle of the motor (optional)
-   */
-  virtual float getDCCurrent(ElectricalAngle electricalAngle);
-
-  /**
-   * Function used for FOC control, it reads the DQ currents of the motor
-   *   It uses the function getPhaseCurrents internally
-   *
-   * @param angle_el - motor electrical angle
-   */
-  DQCurrent getFOCCurrents(ElectricalAngle electricalAngle);
-
-  /**
-   * Function used for Clarke transform in FOC control
-   *   It reads the phase currents of the motor
-   *   It returns the alpha and beta currents
-   *
-   * @param current - phase current
-   */
-  ABCurrent getABCurrents(PhaseCurrent current);
-
-  /**
-   * Function used for Park transform in FOC control
-   *   It reads the Alpha Beta currents and electrical angle of the motor
-   *   It returns the D and Q currents
-   *
-   * @param current - phase current
-   */
-  DQCurrent getDQCurrents(ABCurrent current, ElectricalAngle electricalAngle);
-
-  /**
-   * Function used to read the average current values over N samples
-   */
-  PhaseCurrent readAverageCurrents(int N = 100);
 };
 
 } // namespace foc

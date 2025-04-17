@@ -32,17 +32,13 @@ public:
   virtual ~Driver() = default;
 
 public:
-  virtual void init() = 0;
+  virtual auto init() -> void = 0;
+  [[maybe_unused]] virtual auto enable() -> void = 0;
+  [[maybe_unused]] virtual auto disable() -> void = 0;
 
 public:
-  virtual void enable() = 0;
-
-  virtual void disable() = 0;
-
-public:
-  virtual void setPwm(float Ua, float Ub, float Uc) = 0;
-
-  virtual void setPhaseState(PhaseState sa, PhaseState sb, PhaseState sc) = 0;
+  [[maybe_unused]] virtual auto setPwm(float Ua, float Ub, float Uc) -> void = 0;
+  [[maybe_unused]] virtual auto setPhaseState(PhaseState sa, PhaseState sb, PhaseState sc) -> void = 0;
 };
 
 } // namespace interface

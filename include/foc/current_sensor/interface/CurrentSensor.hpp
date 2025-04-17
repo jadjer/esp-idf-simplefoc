@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <esp_err.h>
+
 namespace foc {
 
 struct DQCurrent {
@@ -36,6 +38,7 @@ namespace interface {
 
 class CurrentSensor {
 public:
+  using Error = esp_err_t;
   using Current = float;
   using ElectricalAngle = float;
 
@@ -43,23 +46,16 @@ public:
   virtual ~CurrentSensor() = default;
 
 public:
-  virtual int init() = 0;
+  virtual auto init() -> Error = 0;
+  [[maybe_unused]] virtual auto enable() -> void = 0;
+  [[maybe_unused]] virtual auto disable() -> void = 0;
 
 public:
-  virtual void enable() = 0;
-
-  virtual void disable() = 0;
-
-public:
-  virtual PhaseCurrent getPhaseCurrents() = 0;
-
-  virtual Current getDCCurrent(ElectricalAngle electricalAngle) = 0;
-
-  virtual DQCurrent getFOCCurrents(ElectricalAngle electricalAngle) = 0;
-
-  virtual ABCurrent getABCurrents(PhaseCurrent current) = 0;
-
-  virtual DQCurrent getDQCurrents(ABCurrent current, ElectricalAngle electricalAngle) = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getPhaseCurrents() -> PhaseCurrent = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getDCCurrent(ElectricalAngle electricalAngle) -> Current = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getFOCCurrents(ElectricalAngle electricalAngle) -> DQCurrent = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getABCurrents(PhaseCurrent current) -> ABCurrent = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getDQCurrents(ABCurrent current, ElectricalAngle electricalAngle) -> DQCurrent = 0;
 };
 
 } // namespace interface

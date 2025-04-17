@@ -27,17 +27,10 @@ public:
   virtual ~Motor() = default;
 
 public:
-  virtual auto initFOC() -> Error = 0;
-
-public:
-  virtual void disable() = 0;
-
   virtual void enable() = 0;
-
-public:
+  virtual void disable() = 0;
+  virtual auto initFOC() -> Error = 0;
   virtual void loopFOC() = 0;
-
-public:
   virtual void move(Target target) = 0;
 };
 

@@ -14,22 +14,30 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace foc {
 
 class LowPassFilter {
+  using Value = float;
+  using Time = std::int64_t;
+
 public:
   /**
    * @param Tf - Low pass filter time constant
    */
-  LowPassFilter(float Tf);
+  LowPassFilter(Value Tf);
   ~LowPassFilter() = default;
 
-  float operator()(float x);
-  float Tf; //!< Low pass filter time constant
+public:
+  auto operator()(Value x) -> Value;
 
-protected:
-  unsigned long timestamp_prev; //!< Last execution timestamp
-  float y_prev;                 //!< filtered value in previous execution step
+private:
+  Value const m_filterTime; //!< Low pass filter time constant
+
+private:
+  Time m_timestampPrev; //!< Last execution timestamp
+  Value m_yPrev;        //!< filtered value in previous execution step
 };
 
 } // namespace foc

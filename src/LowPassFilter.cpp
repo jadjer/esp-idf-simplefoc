@@ -18,24 +18,24 @@
 
 namespace foc {
 
-LowPassFilter::LowPassFilter(float time_constant) : Tf(time_constant), y_prev(0.0f) { timestamp_prev = esp_timer_get_time(); }
+LowPassFilter::LowPassFilter(LowPassFilter::Value timeConstant) : m_filterTime(timeConstant), m_yPrev(0.0f) { m_timestampPrev = esp_timer_get_time(); }
 
-float LowPassFilter::operator()(float x) {
-  unsigned long timestamp = esp_timer_get_time();
-  float dt = (timestamp - timestamp_prev) * 1e-6f;
+auto LowPassFilter::operator()(LowPassFilter::Value x) -> LowPassFilter::Value {
+  LowPassFilter::Time const currentTime = esp_timer_get_time();
+  auto const timeDifferent = (currentTime - m_timestampPrev) * 1e-6f;
 
-  if (dt < 0.0f)
-    dt = 1e-3f;
-  else if (dt > 0.3f) {
-    y_prev = x;
-    timestamp_prev = timestamp;
+  if (timeDifferent > 0.3f) {
+    m_yPrev = x;
+    m_timestampPrev = currentTime;
     return x;
   }
 
-  float alpha = Tf / (Tf + dt);
-  float y = alpha * y_prev + (1.0f - alpha) * x;
-  y_prev = y;
-  timestamp_prev = timestamp;
+  LowPassFilter::Value const alpha = m_filterTime / (m_filterTime + timeDifferent);
+  LowPassFilter::Value const y = alpha * m_yPrev + (1.0f - alpha) * x;
+
+  m_yPrev = y;
+  m_timestampPrev = currentTime;
+
   return y;
 }
 

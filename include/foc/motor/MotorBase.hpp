@@ -102,7 +102,7 @@ public:
   using CurrentSensor = std::unique_ptr<interface::CurrentSensor>;
 
 public:
-  explicit MotorBase(PolePairs pp, OptionalResistance r, OptionalKVRating KV, OptionalInductance L);
+  explicit MotorBase(PolePairs pp, OptionalResistance r, OptionalKVRating kv, OptionalInductance l);
 
   ~MotorBase() override = default;
 

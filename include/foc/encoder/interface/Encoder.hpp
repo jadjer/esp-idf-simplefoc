@@ -50,10 +50,10 @@ public:
   virtual ~Encoder() = default;
 
 public:
-  virtual auto getSensorAngle() -> Angle = 0;
-  virtual auto getAngle() -> Angle = 0;
-  virtual auto getVelocity() -> Velocity = 0;
-  virtual auto getRotations() -> Rotations = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getSensorAngle() -> Angle = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getAngle() -> Angle = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getVelocity() -> Velocity = 0;
+  [[nodiscard]] [[maybe_unused]] virtual auto getRotations() -> Rotations = 0;
 };
 
 } // namespace interface

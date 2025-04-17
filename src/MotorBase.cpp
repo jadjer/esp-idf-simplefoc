@@ -23,8 +23,8 @@ auto const DEF_CURRENT_LIM = 2;
 auto const DEF_INDEX_SEARCH_TARGET_VELOCITY = 2;
 auto const DEF_VOLTAGE_SENSOR_ALIGN = 1;
 
-MotorBase::MotorBase(MotorBase::PolePairs pp, MotorBase::OptionalResistance R, MotorBase::OptionalKVRating KV, MotorBase::OptionalInductance L)
-    : m_polePairs(pp), m_phaseResistance(R), m_KVRating(KV), m_phaseInductance(L) {
+MotorBase::MotorBase(MotorBase::PolePairs pp, MotorBase::OptionalResistance r, MotorBase::OptionalKVRating kv, MotorBase::OptionalInductance l)
+    : m_polePairs(pp), m_phaseResistance(r), m_KVRating(kv), m_phaseInductance(l) {
   voltage_limit = DEF_POWER_SUPPLY;
   current_limit = DEF_CURRENT_LIM;
 
