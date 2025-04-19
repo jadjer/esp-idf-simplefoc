@@ -1,6 +1,6 @@
 dependencies:
   idf: ">=5.4.1"
 
-#  esp_pid:
+#  pid:
 #    git: https://github.com/jadjer/esp-pid.git
 #    version: "*"

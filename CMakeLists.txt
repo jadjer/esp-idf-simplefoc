@@ -10,7 +10,7 @@ set(SOURCES
 
 set(COMPONENTS
         esp_timer
-        esp_pid
+        pid
 )
 
 idf_component_register(SRCS ${SOURCES} INCLUDE_DIRS include REQUIRES ${COMPONENTS})
